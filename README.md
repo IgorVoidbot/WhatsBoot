@@ -1,64 +1,72 @@
-# WhatsBoot
+# WhatsBoot - Chatbot Inteligente com RAG e Event Buffering
 
-WhatsBoot é um chatbot de WhatsApp inteligente e conversacional, construído com FastAPI e potencializado por LangChain e OpenAI. Ele utiliza uma arquitetura RAG (Retrieval-Augmented Generation) para responder a perguntas com base em uma base de conhecimento de documentos fornecida por você.
+![Python](https://img.shields.io/badge/Python-3.13-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Async-green)
+![LangChain](https://img.shields.io/badge/AI-LangChain%20RAG-orange)
+![Redis](https://img.shields.io/badge/Redis-Caching%20%26%20Buffer-red)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 
-## Funcionalidades
+## 🧠 Sobre o Projeto (Engenharia & IA)
 
-  * **Integração com WhatsApp:** Recebe e responde mensagens diretamente no WhatsApp através da Evolution API.
-  * **IA com RAG (Retrieval-Augmented Generation):** O bot usa a LangChain para consultar uma base de conhecimento de documentos (arquivos PDF e TXT) e gerar respostas contextuais e precisas com a ajuda de modelos da OpenAI.
-  * **Memória Conversacional:** Mantém o histórico de conversas com cada usuário utilizando Redis, permitindo interações mais naturais e contextuais.
-  * **Buffer de Mensagens (Debouncing):** Um sistema inteligente que aguarda o usuário terminar de enviar uma sequência de mensagens antes de processá-las. Isso melhora a experiência do usuário e otimiza as chamadas à IA.
-  * **Containerizado com Docker:** Todo o ambiente, incluindo o bot, a API do WhatsApp, o Redis e o banco de dados, é facilmente configurado e executado com Docker Compose.
+O **WhatsBoot** é um assistente virtual de alta performance integrado ao WhatsApp. Diferente de bots tradicionais baseados em regras (`if/else`), ele utiliza uma arquitetura **RAG (Retrieval-Augmented Generation)** para "ler" documentos PDF/TXT e responder perguntas contextuais usando Vetores Matemáticos.
 
-## Arquitetura
+O diferencial técnico deste projeto é sua preocupação com **Concorrência e Otimização de Recursos**. Ele implementa um sistema de *Debouncing* (Buffer de Mensagens) usando Redis e Python Async, garantindo que o sistema não seja sobrecarregado por múltiplos inputs simultâneos — um conceito fundamental em sistemas de tempo real.
 
-O fluxo de funcionamento é o seguinte:
+## 🚀 Destaques Técnicos (Skills Transferíveis)
 
-1.  A **Evolution API** recebe uma mensagem do WhatsApp e a envia para o webhook do **WhatsBoot**.
-2.  A aplicação **FastAPI** (`app.py`) recebe a mensagem.
-3.  A mensagem é adicionada a um buffer no **Redis** (`message_buffer.py`).
-4.  Após um breve período de inatividade do usuário, o buffer é processado.
-5.  A **LangChain** utiliza o histórico da conversa (também do Redis) para reformular a pergunta.
-6.  O sistema busca informações relevantes nos documentos da base de conhecimento (vetorizados pelo **ChromaDB**).
-7.  A **OpenAI** gera uma resposta com base no contexto da conversa e nos documentos encontrados.
-8.  A resposta é enviada de volta ao usuário via **Evolution API**.
+Embora escrito em Python, este projeto aplica conceitos centrais de Ciência da Computação e desenvolvimento de sistemas complexos (como Engines de Jogos/VR):
 
-## Primeiros Passos
+* **Matemática Vetorial (Embeddings):** Utilização de `ChromaDB` para armazenar e consultar dados via similaridade vetorial (Cosseno/Euclidiana). A lógica de manipulação de vetores aqui é análoga à usada em **Computação Gráfica 3D**.
+* **Processamento Assíncrono (`asyncio`):** O sistema não bloqueia a thread principal enquanto processa mensagens. O uso de `await` e filas no Redis simula o comportamento de sistemas de eventos não-bloqueantes.
+* **Gestão de Estado (State Management):** Persistência de histórico de conversas e controle de "sessão" do usuário via Redis, similar ao gerenciamento de estado de jogadores em servidores multiplayer.
+* **Arquitetura de Microsserviços:** Orquestração de múltiplos containers (App, Banco Vetorial, Redis, API WhatsApp) via Docker Compose.
+
+## 🛠️ Arquitetura do Sistema
+
+1.  **Input Buffer (Otimização):**
+    * Recebe mensagens via Webhook.
+    * Armazena em lista temporária no Redis (`RPUSH`).
+    * *Debounce:* Reinicia um timer a cada nova mensagem. A IA só é acionada após X segundos de silêncio, economizando tokens e processamento.
+2.  **RAG Engine (LangChain):**
+    * Carrega PDFs e quebra em *chunks*.
+    * Converte texto em Vetores (OpenAI Embeddings).
+    * Recupera contexto relevante e gera resposta.
+3.  **Interface:** Integração via Evolution API (WhatsApp Gateway).
+
+## ⚙️ Stack Tecnológica
+
+* **Linguagem:** Python 3.13 (Foco em tipagem e async)
+* **Framework Web:** FastAPI (Alta performance)
+* **Banco de Dados Vetorial:** ChromaDB (SQLite-based)
+* **Cache/Fila:** Redis
+* **IA/LLM:** OpenAI GPT-4o + LangChain
+* **Infraestrutura:** Docker & Docker Compose
+
+## 🔧 Como Executar
 
 ### Pré-requisitos
+* Docker e Docker Compose instalados.
+* Chave de API da OpenAI.
 
-  * Docker
-  * Docker Compose
-  * Chaves de API da OpenAI
-
-### Instalação
-
+### Passos
 1.  **Clone o repositório:**
-
     ```bash
-    git clone https://github.com/igorvoidbot/whatsboot.git
-    cd whatsboot
+    git clone [https://github.com/seu-usuario/whatsboot.git](https://github.com/seu-usuario/whatsboot.git)
     ```
-
-2.  **Configure as variáveis de ambiente:**
-
-      * Renomeie o arquivo `.env.example` para `.env`.
-      * Preencha todas as variáveis necessárias no arquivo `.env`, incluindo suas chaves da OpenAI e as configurações da Evolution API.
-
-3.  **Adicione sua Base de Conhecimento:**
-
-      * Coloque seus arquivos `.pdf` ou `.txt` dentro da pasta `rag_files`. O bot irá processar esses arquivos para criar a base de conhecimento.
-
-4.  **Inicie os containers:**
-
+2.  **Configure o ambiente:**
+    * Crie um arquivo `.env` com suas credenciais (veja `.env.example`).
+3.  **Adicione Conhecimento:**
+    * Coloque seus arquivos `.pdf` na pasta `rag_files/`.
+4.  **Suba os containers:**
     ```bash
     docker-compose up -d --build
     ```
 
-5.  **Configure a Evolution API:**
+## 🧪 Estrutura de Código (Destaque)
 
-      * Acesse a interface da Evolution API (normalmente em `http://localhost:8080`).
-      * Crie uma instância e leia o QR Code com seu WhatsApp para conectar.
-      * Configure o Webhook da sua instância para apontar para `http://bot:8000/webhook` (o nome `bot` é o nome do serviço no `docker-compose.yml`).
+* `message_buffer.py`: Implementação manual da lógica de *Debounce* e filas assíncronas com Redis.
+* `vectorstore.py`: Lógica de ingestão e matemática de busca vetorial.
+* `chains.py`: Cadeias de raciocínio da IA.
 
-Agora, o chatbot está pronto para receber e responder mensagens no número de WhatsApp que você conectou.
+---
+*Desenvolvido como projeto de pesquisa em Inteligência Artificial e Sistemas Distribuídos.*
