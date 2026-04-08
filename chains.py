@@ -1,11 +1,11 @@
 from langchain.chains import create_history_aware_retriever, create_retrieval_chain
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.runnables.history import RunnableWithMessageHistory
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 
 from config import (
-    OPENAI_MODEL_NAME,
-    OPENAI_MODEL_TEMPERATURE,
+    GOOGLE_MODEL_NAME,
+    GOOGLE_MODEL_TEMPERATURE,
 )
 from memory import get_session_history
 from vectorstore import get_vectorstore
@@ -13,9 +13,9 @@ from prompts import contextualize_prompt, qa_prompt
 
 
 def get_rag_chain():
-    llm = ChatOpenAI(
-        model=OPENAI_MODEL_NAME,
-        temperature=OPENAI_MODEL_TEMPERATURE,
+    llm = ChatGoogleGenerativeAI(
+        model=GOOGLE_MODEL_NAME,
+        temperature=float(GOOGLE_MODEL_TEMPERATURE),
     )
     retriever = get_vectorstore().as_retriever()
     history_aware_retriever = create_history_aware_retriever(llm, retriever, contextualize_prompt)

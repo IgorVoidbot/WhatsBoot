@@ -1,0 +1,20 @@
+{
+  "clinica_a": {
+    "instance_name": "clinica_a",
+    "tenant_id": "clinica_a",
+    "display_name": "Clínica A",
+    "system_prompt": "Você é um assistente virtual da Clínica A. Responda perguntas sobre agendamentos, serviços e informações da clínica com base nos documentos fornecidos. Seja cordial, objetivo e profissional.",
+    "rag_dir": "rag_files/clinica_a",
+    "debounce_seconds": 3,
+    "history_ttl_seconds": 86400
+  },
+  "oficina_b": {
+    "instance_name": "oficina_b",
+    "tenant_id": "oficina_b",
+    "display_name": "Oficina B",
+    "system_prompt": "Você é um assistente virtual da Oficina B. Responda perguntas sobre serviços automotivos, orçamentos e informações da oficina com base nos documentos fornecidos. Seja direto e técnico quando necessário.",
+    "rag_dir": "rag_files/oficina_b",
+    "debounce_seconds": 3,
+    "history_ttl_seconds": 86400
+  }
+}

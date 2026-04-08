@@ -3,7 +3,7 @@ import shutil
 
 from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import OpenAIEmbeddings
+from langchain_google_genai import GoogleGenerativeAIEmbeddings
 from langchain_chroma import Chroma
 
 from config import RAG_FILES_DIR, VECTOR_STORE_PATH
@@ -38,10 +38,10 @@ def get_vectorstore():
         splits = text_splitter.split_documents(docs)
         return Chroma.from_documents(
             documents=splits,
-            embedding=OpenAIEmbeddings(),
+            embedding=GoogleGenerativeAIEmbeddings(model='models/embedding-001'),
             persist_directory=VECTOR_STORE_PATH,
         )
     return Chroma(
-        embedding_function=OpenAIEmbeddings(),
+        embedding_function=GoogleGenerativeAIEmbeddings(model='models/embedding-001'),
         persist_directory=VECTOR_STORE_PATH,
     )
